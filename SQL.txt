@@ -1,0 +1,276 @@
+Simple Questions: 
+
+Problem # 1: Write a query to display the member id, member name, city and membership status who are all having life time membership. Hint: Life time membership status is “Permanent”.
+SELECT MEMBER_ID, MEMBER_NAME, CITY, MEMBERSHIP_STATUS 
+FROM LMS_MEMBERS 
+WHERE MEMBERSHIP_STATUS = 'Permanent';
+
+
+Problem # 2: Write a query to display the book code, publication, price and supplier name of the book witch is taken frequently. 
+SELECT B.BOOK_CODE, B.PUBLICATION, B.PRICE, S.SUPPLIER_NAME
+FROM LMS_BOOKS B
+JOIN LMS_SUPPLIERS S ON B.SUPPLIER_ID = S.SUPPLIER_ID
+JOIN LMS_ISSUED_BOOKS I ON B.BOOK_CODE = I.BOOK_CODE
+GROUP BY B.BOOK_CODE, B.PUBLICATION, B.PRICE, S.SUPPLIER_NAME
+ORDER BY COUNT(I.BOOK_CODE) DESC
+LIMIT 1;
+
+
+Problem # 3: Write a query to display the member id, member name who have taken the book with book code 'BL000002'. 
+SELECT M.MEMBER_ID, M.MEMBER_NAME
+FROM LMS_MEMBERS M
+JOIN LMS_ISSUED_BOOKS I ON M.MEMBER_ID = I.MEMBER_ID
+WHERE I.BOOK_CODE = 'BL000002';
+
+
+Problem # 4: Write a query to display the book code, book title and author of the books whose author name begins with 'P'. 
+SELECT BOOK_CODE, BOOK_TITLE, AUTHOR
+FROM LMS_BOOKS
+WHERE AUTHOR LIKE 'P%';
+
+
+Problem # 5: Write a query to display the total number of Java books available in library with alias name ‘NO_OF_BOOKS’. 
+SELECT COUNT(*) AS NO_OF_BOOKS
+FROM LMS_BOOKS
+WHERE CATEGORY = 'JAVA';
+
+
+Problem # 6: Write a query to list the category and number of books in each category with alias name ‘NO_OF_BOOKS’. 
+SELECT CATEGORY, COUNT(*) AS NO_OF_BOOKS
+FROM LMS_BOOKS
+GROUP BY CATEGORY;
+
+
+Problem # 7: Write a query to display the number of books published by "Prentice Hall” with the alias name “NO_OF_BOOKS”. 
+SELECT COUNT(*) AS NO_OF_BOOKS
+FROM LMS_BOOKS
+WHERE PUBLICATION = 'Prentice Hall';
+
+
+Problem # 8: Write a query to display the book code, book title of the books which are issued on the date "1st April 2012". 
+SELECT B.BOOK_CODE, B.BOOK_TITLE
+FROM LMS_BOOKS B
+JOIN LMS_ISSUED_BOOKS I ON B.BOOK_CODE = I.BOOK_CODE
+WHERE I.ISSUE_DATE = '2012-04-01';
+
+
+Problem # 9: Write a query to display the member id, member name, date of registration and expiry date of the members whose membership expiry date is before APR 2013. 
+SELECT MEMBER_ID, MEMBER_NAME, DATE_OF_REGISTRATION, EXPIRY_DATE
+FROM LMS_MEMBERS
+WHERE EXPIRY_DATE < '2013-04-01';
+
+
+Problem # 10: write a query to display the member id, member name, date of registration, membership status of the members who registered before "March 2012" and membership status is "Temporary" 
+SELECT MEMBER_ID, MEMBER_NAME, DATE_OF_REGISTRATION, MEMBERSHIP_STATUS
+FROM LMS_MEMBERS
+WHERE DATE_OF_REGISTRATION < '2012-03-01'
+AND MEMBERSHIP_STATUS = 'Temporary';
+
+
+Problem #11: Write a query to display the member id, member name who’s City is CHENNAI or DELHI. Hint: Display the member name in title case with alias name 'Name'. 
+SELECT MEMBER_ID, INITCAP(MEMBER_NAME) AS Name
+FROM LMS_MEMBERS
+WHERE CITY IN ('CHENNAI', 'DELHI');
+
+
+Problem #12: Write a query to concatenate book title, author and display in the following format. Book_Title_is_written_by_Author Example: Let Us C_is_written_by_Yashavant Kanetkar Hint: display unique books. Use “BOOK_WRITTEN_BY” as alias name. 
+SELECT DISTINCT CONCAT(BOOK_TITLE, '_is_written_by_', AUTHOR) AS BOOK_WRITTEN_BY
+FROM LMS_BOOKS;
+
+
+Problem #13: Write a query to display the average price of books which is belonging to ‘JAVA’ category with alias name “AVERAGEPRICE”. 
+SELECT AVG(PRICE) AS AVERAGEPRICE
+FROM LMS_BOOKS
+WHERE CATEGORY = 'JAVA';
+
+
+
+Problem #14: Write a query to display the supplier id, supplier name and email of the suppliers who are all having gmail account. 
+SELECT SUPPLIER_ID, SUPPLIER_NAME, EMAIL
+FROM LMS_SUPPLIERS
+WHERE EMAIL LIKE '%@gmail.com';
+
+
+
+Problem#15: Write a query to display the supplier id, supplier name and contact details. Contact details can be either phone number or email or address with alias name “CONTACTDETAILS”. If phone number is null then display email, even if email also null then display the address of the supplier. Hint: Use Coalesce function. 
+SELECT SUPPLIER_ID, SUPPLIER_NAME,
+       COALESCE(PHONE_NUMBER, EMAIL, ADDRESS) AS CONTACTDETAILS
+FROM LMS_SUPPLIERS;
+
+
+Problem#16: Write a query to display the supplier id, supplier name and contact. If phone number is null then display ‘No’ else display ‘Yes’ with alias name “PHONENUMAVAILABLE”. Hint: Use ISNULL. 
+SELECT SUPPLIER_ID, SUPPLIER_NAME,
+       CASE WHEN PHONE_NUMBER IS NULL THEN 'No' ELSE 'Yes' END AS PHONENUMAVAILABLE
+FROM LMS_SUPPLIERS;
+
+
+Problem#17: Write a query to display the member id, member name, city and member status of members with the total fine paid by them with alias name “Fine”.
+SELECT M.MEMBER_ID, M.MEMBER_NAME, M.CITY, M.MEMBERSHIP_STATUS,
+       SUM(F.FINE_AMOUNT) AS Fine
+FROM LMS_MEMBERS M
+JOIN LMS_FINE F ON M.MEMBER_ID = F.MEMBER_ID
+GROUP BY M.MEMBER_ID, M.MEMBER_NAME, M.CITY, M.MEMBERSHIP_STATUS;
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Average Questions:
+
+Problem # 1:Write a query to display the member id, member name of the members, book code and book title of the book taken by them.
+SELECT M.member_id, M.member_name, B.book_code, B.book_title
+FROM LMS_MEMBERS M
+JOIN LMS_BOOK_ISSUE BI ON M.member_id = BI.member_id
+JOIN LMS_BOOKS B ON BI.book_code = B.book_code;
+
+
+
+Problem # 2: Write a query to display the total number of books available in the library with alias name “NO_OF_BOOKS_AVAILABLE” (Which is not issued). Hint: The issued books details are available in the LMS_BOOK_ISSUE table.
+SELECT COUNT(*) AS NO_OF_BOOKS_AVAILABLE
+FROM LMS_BOOKS
+WHERE book_code NOT IN (SELECT book_code FROM LMS_BOOK_ISSUE);
+
+
+Problem # 3:Write a query to display the member id, member name, fine range and fine amount of the members whose fine amount is less than 100.
+SELECT member_id, member_name, 
+       CASE 
+           WHEN fine_amount < 50 THEN 'Low'
+           WHEN fine_amount < 100 THEN 'Medium'
+           ELSE 'High'
+       END AS fine_range, 
+       fine_amount
+FROM LMS_MEMBERS
+WHERE fine_amount < 100;
+
+
+Problem # 4:Write a query to display the book code, book title, publisher, edition, price and year of publication and sort based on year of publication, publisher and edition.
+SELECT book_code, book_title, publisher, edition, price, year_of_publication
+FROM LMS_BOOKS
+ORDER BY year_of_publication DESC, publisher ASC, edition ASC;
+
+
+Problem # 5:Write a query to display the book code, book title and rack number of the books which are placed in rack 'A1' and sort by book title in ascending order.
+SELECT book_code, book_title, rack_number
+FROM LMS_BOOKS
+WHERE rack_number = 'A1'
+ORDER BY book_title ASC;
+
+
+Problem # 6:Write a query to display the member id, member name, due date and date returned of the members who has returned the books after the due date. Hint: Date_return is due date and Date_returned is actual book return date. 
+SELECT M.member_id, M.member_name, BI.due_date, BI.date_returned
+FROM LMS_BOOK_ISSUE BI
+JOIN LMS_MEMBERS M ON BI.member_id = M.member_id
+WHERE BI.date_returned > BI.due_date;
+
+
+Problem # 7: Write a query to display the member id, member name and date of registration who have not taken any book. 
+SELECT member_id, member_name, date_of_registration
+FROM LMS_MEMBERS
+WHERE member_id NOT IN (SELECT DISTINCT member_id FROM LMS_BOOK_ISSUE);
+
+
+Problem # 8: Write a Query to display the member id and member name of the members who has not paid any fine in the year 2012. 
+SELECT member_id, member_name
+FROM LMS_MEMBERS
+WHERE member_id NOT IN 
+    (SELECT DISTINCT member_id FROM LMS_FINE 
+     WHERE YEAR(fine_date) = 2012);
+
+
+
+Problem # 9: Write a query to display the date on which the maximum numbers of books were issued and the number of books issued with alias name “NOOFBOOKS”. SELECT date_of_issue, COUNT(book_code) AS NOOFBOOKS
+FROM LMS_BOOK_ISSUE
+GROUP BY date_of_issue
+ORDER BY NOOFBOOKS DESC
+LIMIT 1;
+
+
+Problem # 10: Write a query to list the book title and supplier id for the books authored by “Herbert Schildt" and the book edition is 5 and supplied by supplier ‘S01’. 
+SELECT book_title, supplier_id
+FROM LMS_BOOKS
+WHERE author = 'Herbert Schildt' AND edition = 5 AND supplier_id = 'S01';
+
+
+Problem # 11: Write a query to display the rack number and the number of books in each rack with alias name “NOOFBOOKS” and sort by rack number in ascending order. 
+SELECT rack_number, COUNT(*) AS NOOFBOOKS
+FROM LMS_BOOKS
+GROUP BY rack_number
+ORDER BY rack_number ASC;
+
+
+Problem # 12: Write a query to display book issue number, member name, date or registration, date of expiry, book title, category author, price, date of issue, date of return, actual returned date, issue status, fine amount. 
+SELECT BI.issue_id, M.member_name, M.date_of_registration, M.date_of_expiry,
+       B.book_title, B.category, B.author, B.price,
+       BI.date_of_issue, BI.due_date, BI.date_returned,
+       BI.issue_status, F.fine_amount
+FROM LMS_BOOK_ISSUE BI
+JOIN LMS_MEMBERS M ON BI.member_id = M.member_id
+JOIN LMS_BOOKS B ON BI.book_code = B.book_code
+LEFT JOIN LMS_FINE F ON BI.issue_id = F.issue_id;
+
+
+Problem # 13: Write a query to display the book code, title, publish date of the books which is been published in the month of December. 
+SELECT book_code, book_title, publish_date
+FROM LMS_BOOKS
+WHERE MONTH(publish_date) = 12;
+
+
+Problem # 14: Write a query to display the book code, book title ,supplier name and price of the book witch takes maximum price based on each supplier. SELECT B.book_code, B.book_title, S.supplier_name, B.price
+FROM LMS_BOOKS B
+JOIN LMS_SUPPLIERS S ON B.supplier_id = S.supplier_id
+WHERE B.price = (SELECT MAX(price) FROM LMS_BOOKS WHERE supplier_id = B.supplier_id);
+
+
+Problem # 15: Write a query to display book code, book name, and publisher, how old the book is. Sorted as older to newer.
+SELECT book_code, book_title, publisher, 
+       YEAR(CURDATE()) - year_of_publication AS book_age
+FROM LMS_BOOKS
+ORDER BY book_age DESC;
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Complex Questions:
+
+Problem # 1:Write a query to display the book code, book title and supplier name of the supplier who has supplied maximum number of books. For example, if “ABC Store” supplied 3 books, “LM Store” has supplied 2 books and “XYZ Store” has supplied 1 book. So “ABC Store” has supplied maximum number of books, hence display the details as mentioned below.
+Example: BOOK_CODE 	BOOK_TITLE 			SUPPLIER_NAME
+	 BL000008 	Easy Reference for Java 	ABC STORE 
+	 BL000001 	Easy Reference for C 		ABC STORE 
+	 BL000003 	Easy Reference for VB 		ABC STORE
+SELECT B.BOOK_CODE, B.BOOK_TITLE, S.SUPPLIER_NAME
+FROM LMS_BOOKS B
+JOIN LMS_SUPPLIERS S ON B.SUPPLIER_ID = S.SUPPLIER_ID
+WHERE B.SUPPLIER_ID = (
+    SELECT SUPPLIER_ID
+    FROM LMS_BOOKS
+    GROUP BY SUPPLIER_ID
+    ORDER BY COUNT(*) DESC
+    LIMIT 1
+);
+
+
+
+Problem # 2: Write a query to display the member id, member name and number of remaining books he/she can take with “REMAININGBOOKS” as alias name. Hint: Assuming a member can take maximum 3 books. For example, Ramesh has already taken 2 books; he can take only one book now. Hence display the remaining books as 1 in below format. 
+Example: MEMBER_ID MEMBER_NAME REMAININGBOOKS 
+	 LM001 	   RAMESH      	1 
+	 LM002 	   MOHAN       	3
+SELECT M.MEMBER_ID, M.MEMBER_NAME, 
+       (3 - COALESCE(COUNT(I.BOOK_CODE), 0)) AS REMAININGBOOKS
+FROM LMS_MEMBERS M
+LEFT JOIN LMS_BOOK_ISSUE I ON M.MEMBER_ID = I.MEMBER_ID AND I.RETURNED = 'NO'
+GROUP BY M.MEMBER_ID, M.MEMBER_NAME;
+
+
+Problem # 3 Write a query to display the supplier id and supplier name of the supplier who has supplied minimum number of books. For example, if “ABC Store” supplied 3 books, “LM Store” has supplied 2 books and “XYZ Store” has supplied 1 book. So “XYZ Store” has supplied minimum number of books, hence display the details as mentioned below. 
+Example: SUPPLIER_ID SUPPLIER_NAME 
+	 S04 		XYZ STORE
+SELECT S.SUPPLIER_ID, S.SUPPLIER_NAME
+FROM LMS_SUPPLIERS S
+WHERE S.SUPPLIER_ID = (
+    SELECT SUPPLIER_ID
+    FROM LMS_BOOKS
+    GROUP BY SUPPLIER_ID
+    ORDER BY COUNT(*) ASC
+    LIMIT 1
+);
