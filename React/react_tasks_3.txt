@@ -1,0 +1,237 @@
+1. Create HOCList component that display ProductList, EmployeeList  using boostrap table.
+
+
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const HOCList = (WrappedComponent, data, columns) => {
+  return function EnhancedComponent() {
+    return (
+      <div className="container mt-4">
+        <h2>{WrappedComponent.name} Table</h2>
+        <table className="table table-bordered">
+          <thead className="thead-dark">
+            <tr>
+              {columns.map((col, index) => (
+                <th key={index}>{col}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr key={index}>
+                {columns.map((col, i) => (
+                  <td key={i}>{item[col.toLowerCase()]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+};
+
+export default HOCList;
+
+
+
+import React from "react";
+import HOCList from "./HOCList";
+
+const productData = [
+  { id: 1, name: "Laptop", price: "$1000" },
+  { id: 2, name: "Phone", price: "$600" },
+  { id: 3, name: "Tablet", price: "$400" },
+];
+
+const columns = ["ID", "Name", "Price"];
+
+const ProductList = HOCList(() => <h3>Product List</h3>, productData, columns);
+
+export default ProductList;
+
+
+
+
+import React from "react";
+import HOCList from "./HOCList";
+
+const employeeData = [
+  { id: 1, name: "John Doe", department: "IT" },
+  { id: 2, name: "Jane Smith", department: "HR" },
+  { id: 3, name: "Sam Wilson", department: "Finance" },
+];
+
+const columns = ["ID", "Name", "Department"];
+
+const EmployeeList = HOCList(() => <h3>Employee List</h3>, employeeData, columns);
+
+export default EmployeeList;
+
+
+
+
+import React from "react";
+import ProductList from "./ProductList";
+import EmployeeList from "./EmployeeList";
+
+function App() {
+  return (
+    <div>
+      <ProductList />
+      <EmployeeList />
+    </div>
+  );
+}
+
+export default App;
+
+
+
+2. Create ProductComponent  using FetchAPi to display product details in tabular format.
+
+
+import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const ProductComponent = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch products");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <h3 className="text-center mt-4">Loading products...</h3>;
+  if (error) return <h3 className="text-danger text-center mt-4">{error}</h3>;
+
+  return (
+    <div className="container mt-4">
+      <h2 className="mb-4">Product List</h2>
+      <table className="table table-bordered">
+        <thead className="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map((product) => (
+            <tr key={product.id}>
+              <td>{product.id}</td>
+              <td>{product.title}</td>
+              <td>${product.price}</td>
+              <td>{product.category}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default ProductComponent;
+
+
+
+
+3.Create Routing path for  HomePage, LoginComponent,SignupComponent.
+
+
+import React from "react";
+
+const HomePage = () => {
+  return (
+    <div>
+      <h2>Welcome to the Home Page</h2>
+    </div>
+  );
+};
+
+export default HomePage;
+
+
+
+import React from "react";
+
+const LoginComponent = () => {
+  return (
+    <div>
+      <h2>Login Page</h2>
+      <form>
+        <input type="text" placeholder="Username" />
+        <input type="password" placeholder="Password" />
+        <button>Login</button>
+      </form>
+    </div>
+  );
+};
+
+export default LoginComponent;
+
+
+
+import React from "react";
+
+const SignupComponent = () => {
+  return (
+    <div>
+      <h2>Signup Page</h2>
+      <form>
+        <input type="text" placeholder="Username" />
+        <input type="email" placeholder="Email" />
+        <input type="password" placeholder="Password" />
+        <button>Signup</button>
+      </form>
+    </div>
+  );
+};
+
+export default SignupComponent;
+
+
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import HomePage from "./components/HomePage";
+import LoginComponent from "./components/LoginComponent";
+import SignupComponent from "./components/SignupComponent";
+
+const App = () => {
+  return (
+    <Router>
+      <nav>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/login">Login</Link></li>
+          <li><Link to="/signup">Signup</Link></li>
+        </ul>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginComponent />} />
+        <Route path="/signup" element={<SignupComponent />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;

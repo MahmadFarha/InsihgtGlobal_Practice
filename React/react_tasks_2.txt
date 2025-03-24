@@ -1,0 +1,229 @@
+react tasks:
+
+Login
+1.Create React application using Functional components , to display LoginForm, input ID,PWD
+check ID and PWD should be "iguser" and "password" , once form submitted , alert("Valid User")  else
+"Invaild USer".  ( Forms, useState).
+
+Task-1:
+
+import React from "react";
+export default class Task1Class extends React.Component{
+    constructor(props){
+        super(props)
+        this.state={
+            x:0
+        }
+    }
+    increment=()=>{
+        
+        this.setState({x:this.state.x+1});
+    }
+    decrement=()=>{
+        this.setState({x:this.state.x-1});
+    }
+    render(){
+        return(
+            <div>
+
+                <p>Current value:{this.state.x}</p>
+                <button onClick={this.increment}>Increment</button>
+                <button onClick={this.decrement}>Decrement</button>
+                <form onSubmit={this.handleSubmit}></form>
+            </div>
+        )
+    }
+}
+
+Signup
+2.Create React application to Signup Customer with details and review details 
+by clicking on Review button.
+CustomerId,Name,Email,Gender,City(Hyd,Chennai,Pune...)
+
+Task-2:
+
+import { Component } from "react";
+import React from 'react';
+
+export default class Task2Class extends React.Component{
+    constructor(props){
+        super(props)
+            this.state={
+
+                mobiles: [
+                    { id: 1, model: "iPhone 15", price: 79999 },
+                    { id: 2, model: "Samsung S23", price: 74999 },
+                    { id: 3, model: "OnePlus 11", price: 56999 },
+            ]
+        }
+    }
+    render(){
+        return(
+            <div>
+
+                {this.state.mobiles.map((mobile)=>(                    
+                    <ChildClass index={mobile.id} mobile={mobile}/>
+                ))}
+            </div>
+        )
+    }
+}
+
+class ChildClass extends Component{
+    render(){
+        const {id,model,price}=this.props.mobile
+        return(
+            <div style={{"display":"flex"}}>
+                <p>{id}</p>
+                <p>{model}</p>
+                <p>{price}</p>
+            </div>
+        )
+    }
+}
+
+
+3.Create App(Home component)  and embed Login,SignUp components.
+
+Task-3:
+import React, { Component } from 'react'
+
+export default class Task3Class extends React.Component {
+  constructor(props){
+    super(props)
+    this.state={
+      x:0,
+      y:0,
+      res:0
+    }
+  }
+  handlexChange=(event)=>{
+    this.setState({x:parseInt(event.target.value)})
+  }
+  handleyChange=(event)=>{
+    this.setState({y:parseInt(event.target.value)})
+  }
+  render(){
+    return (
+      <div>
+        <input type="text" name="x" id="num1" onChange={this.handlexChange}/>
+        <input type="text" name="y" id="num2" onChange={this.handleyChange}/>
+        
+        <Calci num1={this.state.x} num2={this.state.y}/>
+      </div>
+    )
+  }
+}
+
+class Calci extends Component{
+  render(){
+    const {num1,num2}= this.props
+    return(
+      <div className="task3">
+        <p>Result:</p>
+        <p>Addition:{num1+num2}</p>
+        <p>Subtraction:{num1-num2}</p>
+        <p>Multiplication:{num1*num2}</p>
+      </div>
+    )
+  }
+}
+
+
+Task-2.1:
+import React, { useState } from 'react'
+
+
+export default function Task4Class() {
+      const [id,setId]=useState('');
+        const[pwd,setPwd]=useState('');
+    function handleSubmit(event){
+        event.preventDefault();
+        if (pwd==="password") {
+            alert("Valid user")
+        } else {
+            alert("invalid user")
+        }
+    
+    }
+  
+    return (
+    <div className="task4">
+        <form onSubmit={handleSubmit}>
+            <label>
+                <p>ID:</p>
+                <input type="text" name="inp1" id="inp1" onChange={(e)=>{setId(e.target.value)}}/>
+            </label>
+            <label>
+                <p>Password:</p>
+                <input type="text" name="inp2" id="inp2" onChange={(e)=>{setPwd(e.target.value)}}/>
+            </label>
+            <br />
+            <button type="submit" onClick={handleSubmit}>Submit</button>
+        </form>
+    </div>
+  )
+}
+
+
+
+Task-2.2:
+import React,{useState} from 'react'
+
+export default function Task5() {
+
+  const [formData, setFormData] = useState({
+    customerId: "",
+    name: "",
+    email: "",
+    gender: "",
+    city: ""
+  });
+  const [review, setReview] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  return (
+    <div>
+      <h2>Signup Form</h2>
+      {!review ? (
+        <div>
+          <label>Customer ID: <input type="text" name="customerId" value={formData.customerId} onChange={handleChange} /></label><br />
+          <label>Name: <input type="text" name="name" value={formData.name} onChange={handleChange} /></label><br />
+          <label>Email: <input type="email" name="email" value={formData.email} onChange={handleChange} /></label><br />
+          <label>Gender:
+            <select name="gender" value={formData.gender} onChange={handleChange}>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </label><br />
+          <label>City:
+            <select name="city" value={formData.city} onChange={handleChange}>
+              <option value="">Select</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Pune">Pune</option>
+            </select>
+          </label><br />
+          <button onClick={() => setReview(true)}>Review</button>
+        </div>
+      ) : (
+        <div>
+          <h3>Review Details</h3>
+          <p>Customer ID: {formData.customerId}</p>
+          <p>Name: {formData.name}</p>
+          <p>Email: {formData.email}</p>
+          <p>Gender: {formData.gender}</p>
+          <p>City: {formData.city}</p>
+          <button onClick={() => setReview(false)}>Edit</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+

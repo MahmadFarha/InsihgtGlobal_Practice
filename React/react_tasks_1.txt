@@ -1,0 +1,105 @@
+1.Create Counter application using  and Class components.
+display 2 buttons - ++    --
+use state and perform increment and decrement operations using usedefined functions and setState method.
+
+
+import React, { Component } from 'react'
+
+export default class Counter extends Component {
+
+    constructor(){
+        super();
+        this.state = {
+            count : 0
+        };
+    }
+
+    increment = () => {
+        this.setState( (prevState) => ({ count: prevState.count + 1 }));
+    };
+
+    decrement = () => {
+        this.setState( (prevState) => ({count: prevState.count - 1 }));
+    };
+
+  render() {
+    return (
+      <div>
+        <h1>Counter: {this.state.count}</h1>
+        <button onClick = {this.increment}> + + </button>
+        <br/>
+        <button onClick = {this.decrement}> - - </button>
+      </div>
+    );
+  }
+}
+
+
+
+2.Create application to display Mobile details, Id,Model,Price details  using  child component ( MobileDetails).
+
+
+import React from 'react'
+
+export default function MobileDetails({id, model, price}) {
+  return (
+    <div>
+      <h2>Model: {model}</h2>
+      <p>Id: {id}</p>
+      <p>Price: {price}</p>
+    </div>
+  );
+}
+
+
+ const mobiles = [
+    { id: 1, model: "iPhone 15", price: 79999 },
+    { id: 2, model: "Samsung Galaxy S23", price: 74999 },
+    { id: 3, model: "OnePlus 11", price: 59999 },
+    { id: 4, model: "Google Pixel 7", price: 68999 }
+  ];
+
+
+
+<div>
+        {mobiles.map((mobile) => (
+          <MobileDetails key = {mobile.id} {...mobile} />
+          // <MobileDetails key = {mobile.id} id = {mobile.id} model = {mobile.model} price = {mobile.price} />
+        ))}
+      </div>
+
+
+
+
+3.Create application to send number1,number2 values read from form in  App component  and send to  child Calculator component  and perform sum,diff,product calculations and display  results. 
+
+import React from 'react'
+
+export default function Calculator({number1, number2}) {
+    const num1 = parseFloat(number1);
+    const num2 = parseFloat(number2);
+  return (
+    <div>
+      <h2>Results:</h2>
+      <p><strong>Sum:</strong> {num1 + num2}</p>
+      <p><strong>Difference:</strong> {num1 - num2}</p>
+      <p><strong>Product:</strong> {num1 * num2}</p>
+    </div>
+  )
+}
+
+
+
+const [number1, setNumber1] = useState("");
+const [number2, setNumber2] = useState("");
+
+
+<div>
+        <h1>Calculator App</h1>
+        <form>
+          <input type = "number" placeholder = "Enter number 1" value = {number1} onChange = { (e) => setNumber1(e.target.value) } />
+          <input type = "number" placeholder = "Enter number 2" value = {number2} onChange = { (e) => setNumber2(e.target.value) } />
+        </form>
+        <Calculator number1 = {number1} number2 = {number2} />
+      </div>
+
